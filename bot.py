@@ -380,7 +380,7 @@ async def cancel(call: CallbackQuery):
     active_bot_messages.pop(call.message.chat.id, None)
 
 
-# ---------------- BACK ----------------
+# ---------------- BACKUP ----------------
 
 @dp.callback_query(F.data.startswith("backup"))
 async def back(call: CallbackQuery):
@@ -527,22 +527,36 @@ async def scheduler():
 async def auto_backup():
     while True:
         now = datetime.now(ZoneInfo("Europe/Moscow"))
-        target_time = now.replace(hour=3, minute=0, second=0, microsecond=0)
+        target_time = now.replace(hour=1, minute=0, second=0, microsecond=0)
 
         if now > target_time:
             target_time = target_time.replace(day=now.day + 1)
         wait_seconds = (target_time - now).total_seconds()
         await asyncio.sleep(wait_seconds)
 
-        backup_patch = backup_json("users.json")
+        backup_patch = None
 
-        file = FSInputFile(backup_patch)
-        await bot.send_document(chat_id=ADMIN_ID, document=file, caption="📂 Ежедневный бэкап пользователей готов.")
-        if os.path.exists(backup_patch):
-            os.remove(backup_patch)
-            print(f"✅ Файл {backup_patch} удален")
-        else:
-            print(f"❌ Файл {backup_patch} не найден")
+        try:
+            backup_patch = backup_json("users.json")
+
+            file = FSInputFile(backup_patch)
+            await bot.send_document(chat_id=ADMIN_ID, document=file, caption="📂 Ежедневный бэкап пользователей готов.")
+            if os.path.exists(backup_patch):
+                os.remove(backup_patch)
+                print(f"✅ Файл {backup_patch} удален")
+            else:
+                print(f"❌ Файл {backup_patch} не найден")
+        except Exception as e:
+            error_message = f"❌ Ошибка при создании/отправке бэкапа:\n{str(e)}"
+            print(error_message)
+            
+            try:
+                await bot.send_message(
+                    chat_id=ADMIN_ID,
+                    text=error_message
+                )
+            except Exception as send_error:
+                print(f"❌ Не удалось отправить сообщение об ошибке: {send_error}")
 
 # ---------------- MAIN ----------------
 
