@@ -65,7 +65,7 @@ async def edit_or_answer_clean(call: CallbackQuery, text, **kwargs):
         return sent
 
 
-async def show_temp_message(message: Message, text, seconds=4, **kwargs):
+async def show_temp_message(message: Message, text, seconds=3, **kwargs):
     sent = await answer_clean(message, text, **kwargs)
     await asyncio.sleep(seconds)
     await safe_delete_message(sent.chat.id, sent.message_id)
@@ -375,8 +375,10 @@ async def cancel(call: CallbackQuery):
     await edit_or_answer_clean(call, "Готово, действие отменено.")
     # kb = admin_kb() if call.from_user.id == ADMIN_ID else base_kb()
     # await call.message.answer("👋 Добро пожаловать!", reply_markup=kb)
-    await asyncio.sleep(5)
-    await safe_delete_message(call.message.chat.id, call.message.message_id)
+    await asyncio.sleep(2)
+    kb = admin_kb() if call.from_user.id == ADMIN_ID else base_kb()
+    await edit_or_answer_clean(call, "👋 Главное меню. Что делаем дальше?", reply_markup=kb)
+    # await safe_delete_message(call.message.chat.id, call.message.message_id)
     active_bot_messages.pop(call.message.chat.id, None)
 
 
@@ -394,6 +396,8 @@ async def back(call: CallbackQuery):
     await safe_delete_message(call.message.chat.id, call.message.message_id)
     active_bot_messages.pop(call.message.chat.id, None)
     await call.message.answer_document(file, caption="📂 Свежий бэкап пользователей готов.")
+    kb = admin_kb() if call.from_user.id == ADMIN_ID else base_kb()
+    await edit_or_answer_clean(call, "👋 Главное меню. Что делаем дальше?", reply_markup=kb)
     if os.path.exists(backup_patch):
         os.remove(backup_patch)
         print(f"✅ Файл {backup_patch} удален")
@@ -477,6 +481,8 @@ async def router(message: Message):
         broadcast_mode[admin_id] = False
         await safe_delete_message(message.chat.id, last_bot_messages.get(message.from_user.id))
         await message.delete()
+        kb = admin_kb() if message.from_user.id == ADMIN_ID else base_kb()
+        await bot.send_message(message.from_user.id, "👋 Главное меню. Что делаем дальше?", reply_markup=kb)
         await show_temp_message(message, "✅ Рассылка отправлена пользователям.")
 
 

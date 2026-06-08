@@ -53,7 +53,7 @@ def user_manage_kb(uid):
         ],
         [InlineKeyboardButton(text=" 🗑️ Очистить", callback_data=f"clear_{uid}")],
         [InlineKeyboardButton(text="❌ Удалить", callback_data=f"del_{uid}")],
-        [InlineKeyboardButton(text="⬅️ Назад", callback_data="main")]
+        [InlineKeyboardButton(text="⬅️ Назад", callback_data="users")]
     ])
 
 
