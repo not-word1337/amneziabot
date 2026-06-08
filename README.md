@@ -19,6 +19,14 @@
 
 ## Как развернуть
 
+### Установка для линукса по скрипту
+
+```bash
+wget https://github.com/smirdch183/amneziabot/blob/main/install.sh
+chmod +x install.sh
+install.sh install
+```
+
 ### Установка
 
 ```bash
@@ -60,6 +68,8 @@ WEB_PORT=8080
 ```
 
 ### Docker
+
+### Docker (Для Linux) запускается через sudo к каждой команде или sudo -i
 
 Установка Docker
 ```bash
