@@ -21,7 +21,7 @@ def load_dotenv(path=".env"):
 load_dotenv()
 
 TOKEN = os.getenv("TOKEN", "")
-ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
+ADMIN_ID = int(os.getenv("ADMIN_ID", ""))
 
 GUI = os.getenv("GUI").lower() == "true"
 ADMIN_LOGIN = os.getenv("ADMIN_LOGIN", "admin")
